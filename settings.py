@@ -1,11 +1,16 @@
 import json
 from exchangelib import Credentials, Account
+import pymongo
 
 with open("secret.json", encoding="UTF-8") as f:
     jsonConfig = json.load(f, encoding="utf8")
 
 def get_emits_sender():
     return jsonConfig["emits_sender"]
+
+def get_emits_sender():
+    return jsonConfig["emits_sender"]
+
 
 def get_exchange_account():
     credentials = Credentials(
@@ -15,3 +20,12 @@ def get_exchange_account():
         jsonConfig["exchange"]["email"], credentials=credentials, autodiscover=True
     )
     return account
+
+
+def get_mongo_collection(collection):
+    myclient = pymongo.MongoClient(
+        f"mongodb://{jsonConfig['mongo']['hostname']}:{jsonConfig['mongo']['port']}/"
+    )
+    mydb = myclient[jsonConfig['mongo']['database']]
+    mycol = mydb[collection]
+    return mycol

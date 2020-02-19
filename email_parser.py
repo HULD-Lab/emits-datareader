@@ -3,19 +3,19 @@ import re
 import datetime
 
 patterns = {
-    "Title": r"Title [ .\w\d\-\+]*",
-    "Closing date": r"Closing date [\w]{1,2}\/[\w]{1,2}\/[\w]{4} [\w]{1,2}\:[\w]{2}",
-    "Open date": r"Open date [\w]{1,2}\/[\w]{1,2}\/[\w]{4}",
-    "Price range": r"Price Range [\w\- ]*",
-    "Tender number": r"AO[\d]*",
+    "title": r"Title [ .\w\d\-\+]*",
+    "closing-date": r"Closing date [\w]{1,2}\/[\w]{1,2}\/[\w]{4} [\w]{1,2}\:[\w]{2}",
+    "open-date": r"Open date [\w]{1,2}\/[\w]{1,2}\/[\w]{4}",
+    "price-range": r"Price Range [\w\- ]*",
+    "tender-number": r"AO[\d]*",
 }
 
 value_patterns = {
-    "Title": r"[ .\w\d\-\+]*",
-    "Closing date": r"[\w]{1,2}\/[\w]{1,2}\/[\w]{4} [\w]{1,2}\:[\w]{2}",
-    "Open date": r"[\w]{1,2}\/[\w]{1,2}\/[\w]{4}",
-    "Price range": {"Min price": r"[\d]*\-", "Max price": r"\-[\d]*"},
-    "Tender number": r"AO[\d]*",
+    "title": r"[ .\w\d\-\+]*",
+    "closing-date": r"[\w]{1,2}\/[\w]{1,2}\/[\w]{4} [\w]{1,2}\:[\w]{2}",
+    "open-date": r"[\w]{1,2}\/[\w]{1,2}\/[\w]{4}",
+    "price-range": {"min-price": r"[\d]*\-", "max-price": r"\-[\d]*"},
+    "tender-number": r"AO[\d]*",
 }
 
 
@@ -43,12 +43,12 @@ def parse_value(field_name, field_value):
 
 def convert_value(field_name, value):
     return {
-        "Title": lambda: value.replace("Title ",""),
-        "Closing date": lambda: datetime.datetime.strptime(value, r"%d/%m/%Y %H:%M"),
-        "Open date": lambda: datetime.datetime.strptime(value, r"%d/%m/%Y").date(),
-        "Max price": lambda: int(value.replace("-", "")),
-        "Min price": lambda: int(value.replace("-", "")),
-        "Tender number": lambda: value,
+        "title": lambda: value.replace("Title ",""),
+        "closing-date": lambda: datetime.datetime.strptime(value, r"%d/%m/%Y %H:%M"),
+        "open-date": lambda: datetime.datetime.strptime(value, r"%d/%m/%Y"),
+        "max-price": lambda: int(value.replace("-", "")),
+        "min-price": lambda: int(value.replace("-", "")),
+        "tender-number": lambda: value,
     }.get(field_name, lambda: None)()
 
 
