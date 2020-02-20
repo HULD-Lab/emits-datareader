@@ -17,7 +17,7 @@ def get_exchange_account():
         jsonConfig["exchange"]["email"], jsonConfig["exchange"]["password"]
     )
     account = Account(
-        jsonConfig["exchange"]["email"], credentials=credentials, autodiscover=True
+        jsonConfig["exchange"]["analyzed_mailbox"], credentials=credentials, autodiscover=True
     )
     return account
 
