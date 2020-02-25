@@ -22,10 +22,10 @@ def get_exchange_account():
     return account
 
 
-def get_mongo_collection(collection):
+def get_mongo_collection():
     myclient = pymongo.MongoClient(
         f"mongodb://{jsonConfig['mongo']['hostname']}:{jsonConfig['mongo']['port']}/"
     )
     mydb = myclient[jsonConfig['mongo']['database']]
-    mycol = mydb[collection]
+    mycol = mydb[jsonConfig['mongo']['collection']]
     return mycol
