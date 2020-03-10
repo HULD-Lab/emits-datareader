@@ -8,6 +8,7 @@ patterns = {
     "open-date": r"Open date [\w]{1,2}\/[\w]{1,2}\/[\w]{4}",
     "price-range": r"Price Range [\w\-\> ]*",
     "tender-number": r"AO[\d]*",
+    "spec-prov": r"Special Prov\. [\w{2}\+?]*",
 }
 
 value_patterns = {
@@ -16,6 +17,7 @@ value_patterns = {
     "open-date": r"[\w]{1,2}\/[\w]{1,2}\/[\w]{4}",
     "price-range": {"min-price": r"\>? *[\d]{2,}\-?", "max-price": r"\-[\d]{3,}"},
     "tender-number": r"AO[\d]*",
+    "spec-prov": r"([A-Z]{2}\+?)+",
 }
 
 
@@ -49,6 +51,7 @@ def convert_value(field_name, value):
         "max-price": lambda: int(value.replace("-", "").strip()),
         "min-price": lambda: int(value.replace("-", "").replace(">", "").strip()),
         "tender-number": lambda: value,
+        "spec-prov": lambda: value.split("+"),
     }.get(field_name, lambda: None)()
 
 
@@ -78,5 +81,5 @@ def parse_fields(message_body):
         if value:
             convert_values[field_name] = convert_value(field_name, value)
     if "max-price" not in convert_values:
-        convert_value["max-price"] = calculate_max_price()
+        convert_values["max-price"] = calculate_max_price()
     return convert_values
