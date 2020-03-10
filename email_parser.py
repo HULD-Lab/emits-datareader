@@ -9,15 +9,24 @@ patterns = {
     "price-range": r"Price Range [\w\-\> ]*",
     "tender-number": r"AO[\d]*",
     "spec-prov": r"Special Prov\. [\w{2}\+?]*",
+    "products": r"Products [\w \&\/\\\s;]*Technology[ ]{1,2}Domains",
+    "technology-domains": r"Technology[ ]{1,2}Domains[\w \&\/\\\s\,\;\-]*Establishment",
+    "tender-type": r"Tender Type [\w]*",
+    "esthablishment": r"Establishment [\w]*",
+    "description": r"\n{2}[A-Z]([\S\ ]*\n)*(\n){5}",
 }
 
 value_patterns = {
-    "title": r"[ .\w\d\-\+]*",
+    "title": r".*",
     "closing-date": r"[\w]{1,2}\/[\w]{1,2}\/[\w]{4} [\w]{1,2}\:[\w]{2}",
     "open-date": r"[\w]{1,2}\/[\w]{1,2}\/[\w]{4}",
     "price-range": {"min-price": r"\>? *[\d]{2,}\-?", "max-price": r"\-[\d]{3,}"},
     "tender-number": r"AO[\d]*",
     "spec-prov": r"([A-Z]{2}\+?)+",
+    "products": r".*",
+    "technology-domains": r".*",
+    "esthablishment": r".*",
+    "description": r".*",
 }
 
 
@@ -45,13 +54,33 @@ def parse_value(field_name, field_value):
 
 def convert_value(field_name, value):
     return {
-        "title": lambda: value.replace("Title ", ""),
+        "title": lambda: value.replace("Title ", "").strip(),
         "closing-date": lambda: datetime.datetime.strptime(value, r"%d/%m/%Y %H:%M"),
         "open-date": lambda: datetime.datetime.strptime(value, r"%d/%m/%Y"),
         "max-price": lambda: int(value.replace("-", "").strip()),
         "min-price": lambda: int(value.replace("-", "").replace(">", "").strip()),
         "tender-number": lambda: value,
         "spec-prov": lambda: value.split("+"),
+        "products": lambda: list(
+            map(
+                str.strip,
+                value.replace("Products", "")
+                .replace("Technology  Domains", "")
+                .split("/"),
+            )
+        ),
+        "technology-domains": lambda: list(
+            map(
+                str.strip,
+                value.replace("Establishment", "")
+                .replace("Technology  Domains", "")
+                .replace(";", "/")
+                .split("/"),
+            )
+        ),
+        "tender-type": lambda: value.replace("Tender Type", "").strip(),
+        "esthablishment": lambda: value.replace("Establishment", "").strip(),
+        "description": lambda: value.replace(r"\\r", "").replace(r"\\n", "").strip(),
     }.get(field_name, lambda: None)()
 
 
@@ -69,6 +98,9 @@ def parse_fields(message_body):
     for key, pattern in patterns.items():
         compiled_pattern = re.compile(pattern)
         match = compiled_pattern.search(message_body)
+        f= open("guru99.txt","w")
+        f.write(message_body)
+        f.close()
         if match:
             result_parsed_values = parse_value(key, match.group(0))
             if isinstance(result_parsed_values, str):
