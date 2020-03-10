@@ -52,6 +52,15 @@ def convert_value(field_name, value):
     }.get(field_name, lambda: None)()
 
 
+def calculate_max_price():
+    """Calculcates the max price if is not set. The algorithm has not been specified yet.
+    
+    Returns:
+        int -- the calculated max price
+    """
+    return None
+
+
 def parse_fields(message_body):
     values = {}
     for key, pattern in patterns.items():
@@ -68,4 +77,6 @@ def parse_fields(message_body):
     for field_name, value in values.items():
         if value:
             convert_values[field_name] = convert_value(field_name, value)
+    if "max-price" not in convert_values:
+        convert_value["max-price"] = calculate_max_price()
     return convert_values
