@@ -13,7 +13,6 @@ patterns = {
     "technology-domains": r"Technology[ ]{1,2}Domains[\w \&\/\\\s\,\;\-]*Establishment",
     "tender-type": r"Tender Type [\w]*",
     "esthablishment": r"Establishment [\w]*",
-    "description": r"\n{2}[A-Z]([\S\ ]*\n)*(\n){5}",
 }
 
 value_patterns = {
@@ -26,12 +25,11 @@ value_patterns = {
     "products": r".*",
     "technology-domains": r".*",
     "esthablishment": r".*",
-    "description": r".*",
 }
 
 
 def parse_value_regex(pattern, field_value):
-    compiled_pattern = re.compile(pattern)
+    compiled_pattern = re.compile(pattern, re.MULTILINE)
     match = compiled_pattern.search(field_value)
     if match:
         return match.group(0)
@@ -80,7 +78,6 @@ def convert_value(field_name, value):
         ),
         "tender-type": lambda: value.replace("Tender Type", "").strip(),
         "esthablishment": lambda: value.replace("Establishment", "").strip(),
-        "description": lambda: value.replace(r"\\r", "").replace(r"\\n", "").strip(),
     }.get(field_name, lambda: None)()
 
 
@@ -92,15 +89,28 @@ def calculate_max_price():
     """
     return None
 
+def find_description(message_body):
+    lines = message_body.split('\n')
+    empty_count = 0
+    start_search = False
+    stop_adding = False
+    description = ""
+    for line in lines:
+        if "Last Update Date" in line:
+            start_search = True
+        if start_search and len(line.strip()) == 0:
+            empty_count += 1
+        if empty_count > 3:
+            stop_adding = True
+        if empty_count > 0 and start_search and not stop_adding:
+            description += line.strip() + " "
+    return description.strip()
 
 def parse_fields(message_body):
     values = {}
     for key, pattern in patterns.items():
         compiled_pattern = re.compile(pattern)
         match = compiled_pattern.search(message_body)
-        f= open("guru99.txt","w")
-        f.write(message_body)
-        f.close()
         if match:
             result_parsed_values = parse_value(key, match.group(0))
             if isinstance(result_parsed_values, str):
@@ -114,4 +124,5 @@ def parse_fields(message_body):
             convert_values[field_name] = convert_value(field_name, value)
     if "max-price" not in convert_values:
         convert_values["max-price"] = calculate_max_price()
+    convert_values["description"] = find_description(message_body)
     return convert_values
