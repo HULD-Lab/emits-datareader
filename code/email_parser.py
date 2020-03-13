@@ -1,4 +1,3 @@
-import pandas as pd
 import re
 import datetime
 
@@ -89,8 +88,9 @@ def calculate_max_price():
     """
     return None
 
+
 def find_description(message_body):
-    lines = message_body.split('\n')
+    lines = message_body.split("\n")
     empty_count = 0
     start_search = False
     stop_adding = False
@@ -105,6 +105,7 @@ def find_description(message_body):
         if empty_count > 0 and start_search and not stop_adding:
             description += line.strip() + " "
     return description.strip()
+
 
 def parse_fields(message_body):
     values = {}
