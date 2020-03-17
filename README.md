@@ -1,8 +1,26 @@
-# EMITS datareader 
+# EMITS data-reader for Outlook
 > by [HULD](https://huld.io)
-Reading and storing data from EMITS emails into DB.
 
+[EMITS](http://emits.sso.esa.int/emits/owa/emits.main) data-reader is a tool that supports data analysis on EMITS records.
+Currently, it processes only messages for newly issued tenders.
+The following fields are parsed:
+* Title
+* Description
+* Open date
+* Closing date
+* Min/ Max price
+* Tender Number
+* Tender Type
+* Products
+* Establishment
+
+These data then can be imported as a datasource to PowerBI where various reports can be created.
+                                                                                                                                                                            
 # Setting the environment
+## Requirements
+* Docker installed
+* Optionally PowerBI installed
+
 ## Update Secret.json
 * See the examples in /secret_sample.json
 * Update this file with outlook credentials and other parameters you wish tune
