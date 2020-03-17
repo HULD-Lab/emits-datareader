@@ -35,3 +35,6 @@ def get_mongo_collection():
     mydb = myclient[jsonConfig["mongo"]["database"]]
     mycol = mydb[jsonConfig["mongo"]["collection"]]
     return mycol
+
+def get_daysBack():
+    return jsonConfig["parameters"]["days_back"]

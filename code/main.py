@@ -5,7 +5,7 @@ from datetime import datetime, date, timedelta
 
 account = settings.get_exchange_account()
 
-start = account.default_timezone.localize(EWSDateTime.now() - timedelta(days=2))
+start = account.default_timezone.localize(EWSDateTime.now() - timedelta(days=settings.get_daysBack()))
 end = account.default_timezone.localize(EWSDateTime.now())
 emits_email_list = account.inbox.filter(
     sender=settings.jsonConfig["emits_sender"],
