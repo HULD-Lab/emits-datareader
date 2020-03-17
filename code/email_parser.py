@@ -86,8 +86,18 @@ def calculate_max_price():
     Returns:
         int -- the calculated max price
     """
-    return None
+    #Experimental implementation
+    return 9999
 
+
+def calculate_min_price():
+    """Calculcates the min price if is not set. The algorithm has not been specified yet.
+    
+    Returns:
+        int -- the calculated min price
+    """
+    #Experimental implementation
+    return 0
 
 def find_description(message_body):
     lines = message_body.split("\n")
@@ -125,5 +135,7 @@ def parse_fields(message_body):
             convert_values[field_name] = convert_value(field_name, value)
     if "max-price" not in convert_values:
         convert_values["max-price"] = calculate_max_price()
+    if "min-price" not in convert_values:
+        convert_values["min-price"] = calculate_min_price()
     convert_values["description"] = find_description(message_body)
     return convert_values

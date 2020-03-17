@@ -15,7 +15,8 @@ emits_email_list = account.inbox.filter(
 
 collection = settings.get_mongo_collection()
 
-for item in emits_email_list.order_by("-datetime_received"):
+for n,item in enumerate(emits_email_list.order_by("-datetime_received")):
+    print(f"Processing record {n} from {len(emits_email_list)}")
     parsed_values = email_parser.parse_fields(item.text_body)
     parsed_values["exchange-mail-id"] = item.id
     query = {"exchange-mail-id": item.id}
